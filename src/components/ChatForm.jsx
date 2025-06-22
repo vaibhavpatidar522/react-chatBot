@@ -26,7 +26,10 @@ function ChatForm({ chatHistory, setChatHistory, generateBotResponce }) {
       // call the function to generate the bot's responce
       generateBotResponce([
         ...chatHistory,
-        { role: "user", text: userMessage },
+        {
+          role: "user",
+          text: `Using the details provided above, please address this query: ${userMessage}`,
+        },
       ]);
     }, 600);
   };

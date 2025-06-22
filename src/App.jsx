@@ -2,17 +2,24 @@ import { useEffect, useRef, useState } from "react";
 import ChatbotIcon from "./components/ChatbotIcon";
 import ChatForm from "./components/ChatForm";
 import ChatMessage from "./components/ChatMessage";
+import { companyInfo } from "./CompanyInfo";
 
 function App() {
-  const [chatHistory, setChatHistory] = useState([]);
+  const [chatHistory, setChatHistory] = useState([
+    {
+      hideInChat: true,
+      role: "model",
+      text: companyInfo,
+    },
+  ]);
   const [showChatBot, setShowChatBot] = useState(false);
   const chatBodyRef = useRef();
 
   const generateBotResponce = async (history) => {
-    const updateHistory = (text) => {
+    const updateHistory = (text, isError = false) => {
       setChatHistory((prev) => [
         ...prev.filter((msg) => msg.text !== "Thinking....."),
-        { role: "model", text },
+        { role: "model", text, isError },
       ]);
     };
     history = history.map(({ role, text }) => ({ role, parts: [{ text }] }));
@@ -35,9 +42,8 @@ function App() {
         .replace(/\*\*(.*?)\*\*/g, "$1")
         .trim();
       updateHistory(apiResponceText);
-      console.log(data);
     } catch (error) {
-      console.error(error);
+      updateHistory(error.message, true);
     }
   };
 
